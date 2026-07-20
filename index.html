@@ -1,42 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video</title>
 
-    <style>
-        html, body{
-            margin:0;
-            width:100%;
-            height:100%;
-            overflow:hidden;
-            background:black;
-        }
+<style>
+html, body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    overflow:hidden;
+}
 
-        video{
-            width:100%;
-            height:100%;
-            object-fit:cover;
-        }
-    </style>
+#video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#000;
+}
+</style>
+
 </head>
 <body>
 
-<video id="video" autoplay muted playsinline preload="auto">
-    <source src="vidd.mp4" type="video/mp4">
+<video
+    id="video"
+    src="vidd.mp4"
+    autoplay
+    muted
+    playsinline
+    preload="auto"
+    controls
+>
     Your browser does not support HTML5 video.
 </video>
 
 <script>
-const video = document.querySelector("video");
+const video = document.getElementById("video");
 
-// Unmute after playback starts (some browsers block autoplay with sound)
-video.play().then(() => {
+async function startVideo() {
+    try {
+        await video.play();
+
+        // Try turning sound back on after playback starts
+        setTimeout(() => {
+            video.muted = false;
+        }, 300);
+
+    } catch (e) {
+        console.log("Autoplay blocked:", e);
+    }
+}
+
+window.addEventListener("load", startVideo);
+
+// If autoplay fails, the first click/tap will start it.
+document.addEventListener("click", () => {
     video.muted = false;
-}).catch(() => {
-    console.log("Autoplay with sound was blocked by the browser.");
-});
+    video.play();
+}, { once: true });
+
+document.addEventListener("touchstart", () => {
+    video.muted = false;
+    video.play();
+}, { once: true });
 </script>
 
 </body>
